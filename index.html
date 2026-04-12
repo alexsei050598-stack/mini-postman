@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mini Postman</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231b2234'/%3E%3Cpath d='M18 34l11 11L46 19' stroke='%23ffda79' stroke-width='6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <header class="topbar">
+        <div>
+            <p class="eyebrow">QA-ready</p>
+            <h1>Mini Postman</h1>
+        </div>
+    </header>
+
+    <div class="request-box">
+        <select id="method">
+            <option>GET</option>
+            <option>POST</option>
+            <option>PUT</option>
+            <option>PATCH</option>
+            <option>DELETE</option>
+            <option>HEAD</option>
+            <option>OPTIONS</option>
+        </select>
+
+        <input type="text" id="url" placeholder="https://api.example.com">
+
+        <select id="mode">
+            <option value="normal">Normal</option>
+            <option value="slow3g">Slow 3G</option>
+            <option value="offline">Offline</option>
+        </select>
+
+        <button class="primary" onclick="sendRequest()">Send</button>
+        <button class="ghost" onclick="clearAll()">Clear</button>
+    </div>
+
+    <textarea id="headers" class="headers-area" placeholder="Headers (key: value per line)&#10;Content-Type: application/json&#10;Authorization: Bearer ..."></textarea>
+
+    <textarea id="body" class="body-area" placeholder="Request body (JSON)"></textarea>
+
+    <div class="history">
+        <h3>History</h3>
+        <div id="historyList" class="history-list"></div>
+    </div>
+
+    <div class="response">
+        <h3>Response:</h3>
+        <div class="status-row">
+            <span id="statusBadge" class="status-badge">—</span>
+            <span id="statusLine" class="status">Status: —</span>
+        </div>
+        <div id="requestInfo" class="request-info"></div>
+        <div id="analysis" class="analysis"></div>
+        <div class="actions-row">
+            <button id="copyBtn" class="ghost small" onclick="copyResponse()">Copy response</button>
+        </div>
+        <pre id="responseOutput"></pre>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

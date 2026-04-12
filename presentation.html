@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Postman - Presentation</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap');
+
+    :root {
+      --bg: #10131d;
+      --panel: #181d2a;
+      --text: #eef2ff;
+      --muted: #a8b0c4;
+      --accent: #ff6f3d;
+      --accent-soft: #ffb08f;
+      --line: #2a3142;
+      --ok: #22c55e;
+      --warn: #f59e0b;
+      --err: #ef4444;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Manrope', system-ui, sans-serif;
+      background:
+        radial-gradient(900px 450px at -10% -10%, rgba(255,111,61,0.18), transparent 55%),
+        radial-gradient(700px 350px at 110% -5%, rgba(255,176,143,0.10), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    .deck {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      padding: 36px;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 36px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(24,29,42,0.98), rgba(20,24,35,0.98));
+      padding: 44px;
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+    }
+
+    .slide.active { display: flex; }
+
+    .kicker {
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    h1, h2 { margin: 0; }
+    h1 { font-size: clamp(34px, 5vw, 58px); line-height: 1.05; }
+    h2 { font-size: clamp(28px, 4vw, 42px); }
+
+    p, li { font-size: clamp(17px, 2vw, 24px); line-height: 1.45; }
+
+    ul, ol {
+      margin: 0;
+      padding-left: 24px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.02);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 14px;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      color: #0b0f18;
+    }
+
+    .ok { background: var(--ok); }
+    .warn { background: var(--warn); }
+    .err { background: var(--err); color: #fff; }
+
+    .footer {
+      position: absolute;
+      left: 48px;
+      right: 48px;
+      bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .progress {
+      height: 8px;
+      width: 280px;
+      background: #222838;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+      transition: width .2s ease;
+    }
+
+    .hint {
+      position: absolute;
+      top: 24px;
+      right: 36px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .speech {
+      border-left: 4px solid var(--accent);
+      padding-left: 14px;
+      color: #d7deef;
+      font-size: clamp(16px, 1.8vw, 22px);
+    }
+
+    @media (max-width: 900px) {
+      .slide { inset: 14px; padding: 24px; }
+      .deck { padding: 14px; }
+      .grid { grid-template-columns: 1fr; }
+      .footer { left: 20px; right: 20px; bottom: 16px; }
+      .progress { width: 180px; }
+      .hint { right: 16px; top: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck" id="deck">
+    <div class="hint">← / →, Space</div>
+
+    <section class="slide active">
+      <div class="kicker">QA-ready demo</div>
+      <h1>Mini Postman</h1>
+      <p>Легкий веб-клиент для API-тестирования с фокусом на QA-сценарии.</p>
+      <div>
+        <span class="pill ok">HTTP methods</span>
+        <span class="pill warn">Network modes</span>
+        <span class="pill err">Error resilience</span>
+      </div>
+      <p class="speech">Цель: показать не просто "fetch-кнопку", а инструмент, который помогает быстро находить проблемы в API.</p>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Проблема</div>
+      <h2>Почему не хватало обычного mini client</h2>
+      <ul>
+        <li>Только GET/POST и слабая диагностика ошибок.</li>
+        <li>Нет истории и повторного запуска запросов.</li>
+        <li>Пустые ответы (HEAD/204) часто ломают парсинг.</li>
+        <li>Сложно воспроизвести сетевые кейсы для QA.</li>
+      </ul>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Решение</div>
+      <h2>Что реализовано</h2>
+      <div class="grid">
+        <div class="card">
+          <ul>
+            <li>Методы: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS.</li>
+            <li>Headers + body (с валидацией JSON).</li>
+            <li>Статус-бейджи: 2xx, 4xx, 5xx.</li>
+            <li>История запросов в localStorage.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <ul>
+            <li>Режимы: Normal, Slow 3G, Offline.</li>
+            <li>Copy response, Clear, подсказки по ошибкам.</li>
+            <li>Корректная обработка no-content ответов.</li>
+            <li>Текст/JSON/бинарный fallback без падений.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Архитектура</div>
+      <h2>Просто и прозрачно</h2>
+      <ol>
+        <li><strong>UI:</strong> `index.html` + `style.css`.</li>
+        <li><strong>Логика:</strong> `script.js` (валидация, fetch, рендер).</li>
+        <li><strong>Хранилище:</strong> localStorage для истории.</li>
+        <li><strong>Поток:</strong> форма -> валидация -> запрос -> анализ -> сохранение.</li>
+      </ol>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Демо</div>
+      <h2>Сценарий показа (2-3 минуты)</h2>
+      <ol>
+        <li>GET `.../posts/1` -> 200 + JSON.</li>
+        <li>POST `.../posts` -> 201 + тело ответа.</li>
+        <li>HEAD `.../posts/1` -> 200 + `[no content]`.</li>
+        <li>404 endpoint -> подсказка про неверный путь.</li>
+        <li>Slow 3G и Offline -> проверка устойчивости.</li>
+        <li>Клик по истории -> авто-подстановка формы.</li>
+      </ol>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Ценность</div>
+      <h2>Что видит работодатель</h2>
+      <ul>
+        <li>Ты делаешь не только "работает", но и "удобно тестировать".</li>
+        <li>Есть QA-мышление: edge cases, ясные ошибки, воспроизводимость.</li>
+        <li>Есть продуктовый подход: UX, демо-готовность, аккуратная подача.</li>
+      </ul>
+      <p class="speech">Этот проект уже выглядит как практичный инструмент, а не учебный черновик.</p>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Финал</div>
+      <h2>Короткий спич</h2>
+      <p>Mini Postman — это QA-ориентированный API-клиент, который поддерживает основные HTTP-методы, историю, режимы сети и корректную обработку сложных ответов.</p>
+      <p>Инструмент помогает быстро локализовать проблемы в запросе, сети и сервере, а интерфейс позволяет использовать его как демо-продукт для портфолио.</p>
+      <p class="speech">Спасибо! Готов показать live demo.</p>
+    </section>
+
+    <div class="footer">
+      <div id="counter">1 / 7</div>
+      <div class="progress"><div class="bar" id="bar"></div></div>
+    </div>
+  </div>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const counter = document.getElementById('counter');
+    const bar = document.getElementById('bar');
+    let index = 0;
+
+    function render() {
+      slides.forEach((s, i) => s.classList.toggle('active', i === index));
+      counter.textContent = `${index + 1} / ${slides.length}`;
+      bar.style.width = `${((index + 1) / slides.length) * 100}%`;
+    }
+
+    function next() {
+      index = Math.min(index + 1, slides.length - 1);
+      render();
+    }
+
+    function prev() {
+      index = Math.max(index - 1, 0);
+      render();
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') next();
+      if (e.key === 'ArrowLeft' || e.key === 'PageUp') prev();
+    });
+
+    window.addEventListener('click', next);
+    render();
+  </script>
+</body>
+</html>
