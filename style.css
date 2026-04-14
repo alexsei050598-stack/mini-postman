@@ -48,9 +48,10 @@ body {
         "topbar response"
         "request response"
         "headers response"
+        "headersTools response"
         "body response"
         "history response";
-    grid-template-rows: auto auto auto auto 1fr;
+    grid-template-rows: auto auto auto auto auto 1fr;
     gap: 14px;
 }
 
@@ -148,6 +149,26 @@ h3 {
     grid-area: history;
     padding: 14px;
     min-height: 180px;
+}
+
+.headers-tools {
+    grid-area: headersTools;
+    margin-top: -2px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.headers-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 8px;
+}
+
+.headers-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .history-list {
@@ -363,6 +384,7 @@ textarea:focus-visible {
             "topbar"
             "request"
             "headers"
+            "headersTools"
             "body"
             "history"
             "response";
@@ -398,6 +420,10 @@ textarea:focus-visible {
     }
 
     .request-box {
+        grid-template-columns: 1fr;
+    }
+
+    .headers-row {
         grid-template-columns: 1fr;
     }
 

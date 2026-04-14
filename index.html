@@ -40,6 +40,20 @@
     </div>
 
     <textarea id="headers" class="headers-area" placeholder="Headers (key: value per line)&#10;Content-Type: application/json&#10;Authorization: Bearer ..."></textarea>
+    <div class="headers-tools">
+        <div class="headers-row">
+            <input type="text" id="headerKey" placeholder="Header key (e.g. Authorization)">
+            <input type="text" id="headerValue" placeholder="Header value (e.g. Bearer TOKEN)">
+            <button class="ghost small" type="button" onclick="addHeaderFromInputs()">Add</button>
+        </div>
+        <div class="headers-actions">
+            <button class="ghost small" type="button" onclick="applyHeaderPreset('json')">JSON</button>
+            <button class="ghost small" type="button" onclick="applyHeaderPreset('auth')">Bearer</button>
+            <button class="ghost small" type="button" onclick="applyHeaderPreset('accept')">Accept JSON</button>
+            <button class="ghost small" type="button" onclick="formatHeadersEditor()">Format</button>
+            <button class="ghost small" type="button" onclick="clearHeadersEditor()">Clear headers</button>
+        </div>
+    </div>
 
     <textarea id="body" class="body-area" placeholder="Request body (JSON)"></textarea>
 
