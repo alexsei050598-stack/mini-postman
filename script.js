@@ -196,22 +196,29 @@ function parseHeaders(raw) {
 }
 
 function addHeaderFromInputs() {
-    const keyEl = document.getElementById('headerKey');
+    const key = getSelectedHeaderKey();
     const valueEl = document.getElementById('headerValue');
-    const key = (keyEl.value || '').trim();
     const value = (valueEl.value || '').trim();
 
     if (!key) return;
     appendOrReplaceHeader(key, value);
-    keyEl.value = '';
     valueEl.value = '';
-    keyEl.focus();
+    valueEl.focus();
 }
 
 function applyHeaderPreset(type) {
-    if (type === 'json') appendOrReplaceHeader('Content-Type', 'application/json');
-    if (type === 'auth') appendOrReplaceHeader('Authorization', 'Bearer ');
-    if (type === 'accept') appendOrReplaceHeader('Accept', 'application/json');
+    if (type === 'json') {
+        setHeaderSelectValue('Content-Type');
+        appendOrReplaceHeader('Content-Type', 'application/json');
+    }
+    if (type === 'auth') {
+        setHeaderSelectValue('Authorization');
+        appendOrReplaceHeader('Authorization', 'Bearer ');
+    }
+    if (type === 'accept') {
+        setHeaderSelectValue('Accept');
+        appendOrReplaceHeader('Accept', 'application/json');
+    }
 }
 
 function clearHeadersEditor() {
@@ -252,6 +259,41 @@ function appendOrReplaceHeader(key, value) {
 
     if (!replaced) lines.push(`${key}: ${value}`);
     headersEl.value = lines.join('\n');
+}
+
+function getSelectedHeaderKey() {
+    const select = document.getElementById('headerNameSelect');
+    const customKeyEl = document.getElementById('headerCustomKey');
+    const selected = (select.value || '').trim();
+    if (selected === 'Custom') {
+        return (customKeyEl.value || '').trim();
+    }
+    return selected;
+}
+
+function setHeaderSelectValue(key) {
+    const select = document.getElementById('headerNameSelect');
+    if (!select) return;
+    const exists = Array.from(select.options).some(opt => opt.value === key);
+    select.value = exists ? key : 'Custom';
+    toggleCustomHeaderKeyInput();
+    if (!exists) {
+        const customKeyEl = document.getElementById('headerCustomKey');
+        customKeyEl.value = key;
+    }
+}
+
+function toggleCustomHeaderKeyInput() {
+    const select = document.getElementById('headerNameSelect');
+    const customKeyEl = document.getElementById('headerCustomKey');
+    const showCustom = select && select.value === 'Custom';
+    if (!customKeyEl) return;
+    customKeyEl.style.display = showCustom ? 'block' : 'none';
+    if (showCustom) {
+        customKeyEl.focus();
+    } else {
+        customKeyEl.value = '';
+    }
 }
 
 function escapeHtml(str) {
@@ -405,6 +447,11 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     const headerValue = document.getElementById('headerValue');
+    const headerNameSelect = document.getElementById('headerNameSelect');
+    if (headerNameSelect) {
+        headerNameSelect.addEventListener('change', toggleCustomHeaderKeyInput);
+        toggleCustomHeaderKeyInput();
+    }
     if (headerValue) {
         headerValue.addEventListener('keydown', e => {
             if (e.key === 'Enter') {
@@ -418,7 +465,12 @@ window.addEventListener('DOMContentLoaded', () => {
 function clearAll() {
     document.getElementById('url').value = '';
     document.getElementById('headers').value = '';
-    document.getElementById('headerKey').value = '';
+    const headerNameSelect = document.getElementById('headerNameSelect');
+    if (headerNameSelect) {
+        headerNameSelect.value = 'Content-Type';
+    }
+    document.getElementById('headerCustomKey').value = '';
+    toggleCustomHeaderKeyInput();
     document.getElementById('headerValue').value = '';
     document.getElementById('body').value = '';
     document.getElementById('responseOutput').textContent = '';

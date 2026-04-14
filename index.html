@@ -42,7 +42,18 @@
     <textarea id="headers" class="headers-area" placeholder="Headers (key: value per line)&#10;Content-Type: application/json&#10;Authorization: Bearer ..."></textarea>
     <div class="headers-tools">
         <div class="headers-row">
-            <input type="text" id="headerKey" placeholder="Header key (e.g. Authorization)">
+            <select id="headerNameSelect">
+                <option value="Content-Type">Content-Type</option>
+                <option value="Authorization">Authorization</option>
+                <option value="Accept">Accept</option>
+                <option value="User-Agent">User-Agent</option>
+                <option value="X-Request-ID">X-Request-ID</option>
+                <option value="X-Correlation-ID">X-Correlation-ID</option>
+                <option value="Cache-Control">Cache-Control</option>
+                <option value="If-None-Match">If-None-Match</option>
+                <option value="Custom">Custom...</option>
+            </select>
+            <input type="text" id="headerCustomKey" placeholder="Custom header key" style="display:none;">
             <input type="text" id="headerValue" placeholder="Header value (e.g. Bearer TOKEN)">
             <button class="ghost small" type="button" onclick="addHeaderFromInputs()">Add</button>
         </div>

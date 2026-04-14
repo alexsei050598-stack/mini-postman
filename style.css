@@ -161,7 +161,7 @@ h3 {
 
 .headers-row {
     display: grid;
-    grid-template-columns: 1fr 1fr auto;
+    grid-template-columns: 200px 1fr 1fr auto;
     gap: 8px;
 }
 
