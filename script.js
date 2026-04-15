@@ -1,3 +1,175 @@
+const LOCALE_KEY = 'mini-postman-locale';
+const I18N = {
+    en: {
+        kicker: 'QA-ready',
+        mode_normal: 'Normal',
+        mode_slow3g: 'Slow 3G',
+        mode_offline: 'Offline',
+        use_proxy: 'Use proxy',
+        send: 'Send',
+        clear: 'Clear',
+        curl_import_title: 'Import from DevTools cURL',
+        import: 'Import',
+        curl_placeholder: "Paste 'Copy as cURL' command here",
+        headers_placeholder: 'Headers (key: value per line)\nContent-Type: application/json\nAuthorization: Bearer ...',
+        custom_header: 'Custom...',
+        custom_header_key: 'Custom header key',
+        header_value_placeholder: 'Header value (e.g. Bearer TOKEN)',
+        add: 'Add',
+        accept_json: 'Accept JSON',
+        format: 'Format',
+        clear_headers: 'Clear headers',
+        body_placeholder: 'Request body (JSON)',
+        history: 'History',
+        response: 'Response:',
+        copy_response: 'Copy response',
+        status_dash: 'Статус: —',
+        status_invalid_url: 'Статус: некорректный URL',
+        status_invalid_target_url: 'Статус: неверный target URL',
+        status_headers_error: 'Статус: ошибка заголовков',
+        status_body_invalid_json: 'Статус: body невалидный JSON',
+        status_pending: 'Статус: отправка...',
+        status_failed: 'Статус: ошибка',
+        status_imported: 'Статус: импортировано',
+        status_import_error: 'Статус: ошибка импорта',
+        status_ok: 'Статус: {status} {statusText}',
+        request_prefix: 'Request: {method} {url}',
+        enter_valid_url: 'Enter URL before sending.',
+        invalid_url_message: 'URL looks invalid. Check scheme (http/https) and domain.',
+        invalid_json_message: 'Request body is invalid for Content-Type application/json: {message}',
+        no_internet: 'No internet connection (offline mode or real offline).',
+        api_error_prefix: 'API returned error: {status} {statusText}',
+        no_content: '[no content]',
+        empty_response: '[empty response]',
+        binary_content: '[binary content] {size} bytes{ct}',
+        history_empty: 'History is empty',
+        tag_body: 'body',
+        tag_headers: 'headers',
+        header_format_error: 'Each header must be in format Key: Value',
+        header_name_empty: 'Header name cannot be empty',
+        header_invalid_chars: 'Header "{key}" has invalid symbols (for example “…”). Use ASCII symbols.',
+        curl_insert_hint: 'Paste cURL command from DevTools (Copy as cURL).',
+        curl_imported_ok: 'cURL imported. Review fields and press Send.',
+        curl_import_failed: 'Failed to import cURL: {message}',
+        curl_empty: 'Empty command.',
+        curl_must_start: 'Command must start with curl.',
+        curl_url_not_found: 'URL not found in cURL command.',
+        openai_dashboard_hint: 'For OpenAI use API endpoint like https://api.openai.com/v1/... (not /dashboard/...).',
+        network_dns_cors: 'Request failed: network, DNS or CORS issue. {message}',
+        cors_blocked: 'Request blocked by browser (CORS/Network policy) for domain {host}.',
+        request_error: 'Request error: {message}',
+        status_analysis_ok: 'All good: 2xx response.',
+        status_analysis_404: '404: possibly wrong endpoint or resource does not exist.',
+        status_analysis_403: '403: no access/permissions, check auth token.',
+        status_analysis_5xx: '5xx: server-side problem, retry later or contact backend.',
+        status_analysis_4xx: '4xx: client error, check request/permissions.'
+    },
+    ru: {
+        kicker: 'QA-ready',
+        mode_normal: 'Обычный',
+        mode_slow3g: 'Slow 3G',
+        mode_offline: 'Оффлайн',
+        use_proxy: 'Через прокси',
+        send: 'Отправить',
+        clear: 'Очистить',
+        curl_import_title: 'Импорт из DevTools cURL',
+        import: 'Импорт',
+        curl_placeholder: "Вставьте команду 'Copy as cURL' сюда",
+        headers_placeholder: 'Заголовки (key: value в строке)\nContent-Type: application/json\nAuthorization: Bearer ...',
+        custom_header: 'Свой...',
+        custom_header_key: 'Свой ключ заголовка',
+        header_value_placeholder: 'Значение заголовка (например Bearer TOKEN)',
+        add: 'Добавить',
+        accept_json: 'Accept JSON',
+        format: 'Формат',
+        clear_headers: 'Очистить заголовки',
+        body_placeholder: 'Тело запроса (JSON)',
+        history: 'История',
+        response: 'Ответ:',
+        copy_response: 'Скопировать ответ',
+        status_dash: 'Status: —',
+        status_invalid_url: 'Status: invalid URL',
+        status_invalid_target_url: 'Status: invalid target URL',
+        status_headers_error: 'Status: headers error',
+        status_body_invalid_json: 'Status: body is not valid JSON',
+        status_pending: 'Status: pending...',
+        status_failed: 'Status: failed',
+        status_imported: 'Status: imported',
+        status_import_error: 'Status: import error',
+        status_ok: 'Status: {status} {statusText}',
+        request_prefix: 'Request: {method} {url}',
+        enter_valid_url: 'Введите URL перед отправкой.',
+        invalid_url_message: 'URL выглядит некорректным. Проверьте схему (http/https) и домен.',
+        invalid_json_message: 'Тело запроса невалидно для Content-Type application/json: {message}',
+        no_internet: 'Нет соединения с интернетом (offline режим или реальный оффлайн).',
+        api_error_prefix: 'API вернуло ошибку: {status} {statusText}',
+        no_content: '[нет содержимого]',
+        empty_response: '[пустой ответ]',
+        binary_content: '[бинарный контент] {size} bytes{ct}',
+        history_empty: 'История пуста',
+        tag_body: 'body',
+        tag_headers: 'headers',
+        header_format_error: 'Каждый header должен быть в формате Key: Value',
+        header_name_empty: 'Header name не может быть пустым',
+        header_invalid_chars: 'Header "{key}" содержит недопустимые символы (например “…”). Используйте ASCII символы.',
+        curl_insert_hint: 'Вставьте команду cURL из DevTools (Copy as cURL).',
+        curl_imported_ok: 'cURL импортирован. Проверьте данные и нажмите Send.',
+        curl_import_failed: 'Не удалось импортировать cURL: {message}',
+        curl_empty: 'Пустая команда.',
+        curl_must_start: 'Команда должна начинаться с curl.',
+        curl_url_not_found: 'URL не найден в cURL команде.',
+        openai_dashboard_hint: 'Для OpenAI используйте API endpoint вида https://api.openai.com/v1/... (а не /dashboard/...).',
+        network_dns_cors: 'Запрос не ушёл: проблемы с сетью, DNS или CORS. {message}',
+        cors_blocked: 'Запрос заблокирован браузером (CORS/Network policy) для домена {host}.',
+        request_error: 'Ошибка запроса: {message}',
+        status_analysis_ok: 'Все ок: ответ 2xx.',
+        status_analysis_404: '404: возможно, неверный endpoint или ресурс не существует.',
+        status_analysis_403: '403: нет доступа/прав, проверьте авторизацию или токен.',
+        status_analysis_5xx: '5xx: проблема на стороне сервера, повторите позже или сообщите backend.',
+        status_analysis_4xx: '4xx: клиентская ошибка, проверьте запрос/права.'
+    }
+};
+
+let currentLocale = localStorage.getItem(LOCALE_KEY) || 'ru';
+if (!I18N[currentLocale]) currentLocale = 'ru';
+
+function t(key, vars = {}) {
+    const dict = I18N[currentLocale] || I18N.ru;
+    let template = dict[key] || I18N.en[key] || key;
+    Object.entries(vars).forEach(([k, v]) => {
+        template = template.replaceAll(`{${k}}`, String(v ?? ''));
+    });
+    return template;
+}
+
+function setLocale(locale) {
+    currentLocale = I18N[locale] ? locale : 'ru';
+    localStorage.setItem(LOCALE_KEY, currentLocale);
+    applyI18n();
+}
+
+function applyI18n() {
+    document.documentElement.lang = currentLocale === 'ru' ? 'ru' : 'en';
+    const localeLabel = document.getElementById('localeLabel');
+    if (localeLabel) localeLabel.textContent = currentLocale.toUpperCase();
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        el.textContent = t(key);
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        el.placeholder = t(key);
+    });
+
+    const statusLine = document.getElementById('statusLine');
+    if (statusLine && (statusLine.textContent === 'Status: —' || statusLine.textContent === t('status_dash'))) {
+        statusLine.textContent = t('status_dash');
+    }
+
+    renderHistory();
+}
+
 async function sendRequest() {
     const methodSelect = document.getElementById('method');
     const method = (methodSelect.value || 'GET').toUpperCase();
@@ -15,8 +187,8 @@ async function sendRequest() {
 
     // URL checks
     if (!url) {
-        output.textContent = 'Введите URL перед отправкой.';
-        statusLine.textContent = 'Status: —';
+        output.textContent = t('enter_valid_url');
+        statusLine.textContent = t('status_dash');
         statusLine.className = 'status';
         statusBadge.textContent = '—';
         statusBadge.className = 'status-badge';
@@ -26,8 +198,8 @@ async function sendRequest() {
     try {
         new URL(url);
     } catch (_) {
-        output.textContent = 'URL выглядит некорректным. Проверьте схему (http/https) и домен.';
-        statusLine.textContent = 'Status: invalid URL';
+        output.textContent = t('invalid_url_message');
+        statusLine.textContent = t('status_invalid_url');
         statusLine.className = 'status error';
         statusBadge.textContent = 'ERR';
         statusBadge.className = 'status-badge error';
@@ -37,7 +209,7 @@ async function sendRequest() {
 
     const knownUrlIssue = getKnownUrlIssue(url);
     if (knownUrlIssue) {
-        statusLine.textContent = 'Status: invalid target URL';
+        statusLine.textContent = t('status_invalid_target_url');
         statusLine.className = 'status error';
         statusBadge.textContent = 'ERR';
         statusBadge.className = 'status-badge error';
@@ -53,7 +225,7 @@ async function sendRequest() {
     try {
         headers = parseHeaders(headersRaw);
     } catch (err) {
-        statusLine.textContent = 'Status: headers error';
+        statusLine.textContent = t('status_headers_error');
         statusLine.className = 'status error';
         output.textContent = err.message;
         statusBadge.textContent = 'ERR';
@@ -69,9 +241,9 @@ async function sendRequest() {
         try {
             JSON.parse(bodyInput);
         } catch (err) {
-            statusLine.textContent = 'Status: body is not valid JSON';
+            statusLine.textContent = t('status_body_invalid_json');
             statusLine.className = 'status error';
-            output.textContent = 'Тело запроса невалидно для Content-Type application/json: ' + err.message;
+            output.textContent = t('invalid_json_message', { message: err.message });
             statusBadge.textContent = 'ERR';
             statusBadge.className = 'status-badge error';
             analysis.textContent = '';
@@ -79,12 +251,12 @@ async function sendRequest() {
         }
     }
 
-    output.textContent = 'Sending request...';
-    statusLine.textContent = 'Status: pending...';
+    output.textContent = '...';
+    statusLine.textContent = t('status_pending');
     statusLine.className = 'status';
     statusBadge.textContent = '...';
     statusBadge.className = 'status-badge';
-    requestInfo.textContent = `Request: ${method} ${url}`;
+    requestInfo.textContent = t('request_prefix', { method, url });
     analysis.textContent = '';
     copyBtn.disabled = true;
     updateMethodStyle(method);
@@ -138,7 +310,7 @@ async function sendRequest() {
         const contentType = response.headers.get('content-type') || '';
 
         const statusText = response.statusText || '';
-        statusLine.textContent = `Status: ${response.status} ${statusText}`.trim();
+        statusLine.textContent = t('status_ok', { status: response.status, statusText }).trim();
         statusLine.className = `status ${response.ok ? 'ok' : getStatusClass(response.status)}`;
         const badgeClass = getStatusBadge(response.status);
         statusBadge.textContent = response.status;
@@ -154,13 +326,16 @@ async function sendRequest() {
 
         let formatted;
         if (noContent) {
-            formatted = '[no content]';
+            formatted = t('no_content');
         } else if (contentType.includes('application/json')) {
             formatted = formatJson(text);
         } else if (contentType.startsWith('text/') || contentType.includes('xml') || contentType.includes('html')) {
-            formatted = escapeHtml(text || '[empty response]');
+            formatted = escapeHtml(text || t('empty_response'));
         } else {
-            formatted = `[binary content] ${buffer.byteLength} bytes` + (contentType ? ` (${contentType})` : '');
+            formatted = t('binary_content', {
+                size: buffer.byteLength,
+                ct: contentType ? ` (${contentType})` : ''
+            });
         }
 
         output.innerHTML = formatted;
@@ -169,11 +344,11 @@ async function sendRequest() {
         // Highlight API-side errors (non-2xx)
         if (!response.ok) {
             output.innerHTML =
-                `<div>API вернуло ошибку: ${response.status} ${statusText}</div><hr>` +
+                `<div>${t('api_error_prefix', { status: response.status, statusText })}</div><hr>` +
                 output.innerHTML;
         }
     } catch (err) {
-        statusLine.textContent = 'Status: failed';
+        statusLine.textContent = t('status_failed');
         statusLine.className = 'status error';
         statusBadge.textContent = 'ERR';
         statusBadge.className = 'status-badge error';
@@ -181,7 +356,7 @@ async function sendRequest() {
         copyBtn.disabled = false;
         const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
         if (offline || err instanceof OfflineError) {
-            output.textContent = 'Нет соединения с интернетом (offline режим или реальный оффлайн).';
+            output.textContent = t('no_internet');
             return;
         }
 
@@ -211,15 +386,15 @@ function parseHeaders(raw) {
         if (!line.trim()) continue;
         const idx = line.indexOf(':');
         if (idx === -1) {
-            throw new Error('Каждый header должен быть в формате Key: Value');
+            throw new Error(t('header_format_error'));
         }
         const key = line.slice(0, idx).trim();
         const value = sanitizeHeaderValue(line.slice(idx + 1).trim());
         if (!key) {
-            throw new Error('Header name не может быть пустым');
+            throw new Error(t('header_name_empty'));
         }
         if (!isLatin1(value)) {
-            throw new Error(`Header "${key}" содержит недопустимые символы (например, “…”). Используйте обычные ASCII символы.`);
+            throw new Error(t('header_invalid_chars', { key }));
         }
         headers[key] = value;
     }
@@ -235,18 +410,18 @@ function importCurlCommand() {
     const raw = (curlInput?.value || '').trim();
 
     if (!raw) {
-        statusLine.textContent = 'Status: import error';
+        statusLine.textContent = t('status_import_error');
         statusLine.className = 'status error';
         statusBadge.textContent = 'ERR';
         statusBadge.className = 'status-badge error';
-        output.textContent = 'Вставьте команду cURL из DevTools (Copy as cURL).';
+        output.textContent = t('curl_insert_hint');
         analysis.textContent = '';
         return;
     }
 
     try {
         const parsed = parseCurlCommand(raw);
-        if (!parsed.url) throw new Error('URL не найден в cURL команде.');
+        if (!parsed.url) throw new Error(t('curl_url_not_found'));
 
         document.getElementById('url').value = parsed.url;
         document.getElementById('method').value = parsed.method || 'GET';
@@ -256,18 +431,18 @@ function importCurlCommand() {
         const proxyEl = document.getElementById('useProxy');
         if (proxyEl) proxyEl.checked = true;
 
-        statusLine.textContent = 'Status: imported';
+        statusLine.textContent = t('status_imported');
         statusLine.className = 'status ok';
         statusBadge.textContent = 'OK';
         statusBadge.className = 'status-badge success';
-        output.textContent = 'cURL импортирован. Проверьте данные и нажмите Send.';
+        output.textContent = t('curl_imported_ok');
         analysis.textContent = '';
     } catch (err) {
-        statusLine.textContent = 'Status: import error';
+        statusLine.textContent = t('status_import_error');
         statusLine.className = 'status error';
         statusBadge.textContent = 'ERR';
         statusBadge.className = 'status-badge error';
-        output.textContent = 'Не удалось импортировать cURL: ' + err.message;
+        output.textContent = t('curl_import_failed', { message: err.message });
         analysis.textContent = '';
     }
 }
@@ -276,8 +451,8 @@ function parseCurlCommand(raw) {
     // Remove line continuations to parse multiline copied commands
     const normalized = raw.replace(/\\\r?\n/g, ' ').trim();
     const tokens = shellSplit(normalized);
-    if (!tokens.length) throw new Error('Пустая команда.');
-    if (tokens[0] !== 'curl') throw new Error('Команда должна начинаться с curl.');
+    if (!tokens.length) throw new Error(t('curl_empty'));
+    if (tokens[0] !== 'curl') throw new Error(t('curl_must_start'));
 
     let method = '';
     let url = '';
@@ -399,7 +574,7 @@ function getKnownUrlIssue(rawUrl) {
     }
 
     if (u.host === 'api.openai.com' && u.pathname.startsWith('/dashboard/')) {
-        return 'Для OpenAI используйте API endpoint вида https://api.openai.com/v1/... (а не /dashboard/...).';
+        return t('openai_dashboard_hint');
     }
 
     return null;
@@ -407,23 +582,23 @@ function getKnownUrlIssue(rawUrl) {
 
 function getErrorHint(err, requestUrl) {
     if (!(err instanceof TypeError)) {
-        return `Ошибка запроса: ${err.message}`;
+        return t('request_error', { message: err.message });
     }
 
     let targetHost = '';
     try {
         targetHost = new URL(requestUrl).host;
     } catch (_) {
-        return 'Запрос не ушёл: проблемы с сетью, DNS или CORS. ' + err.message;
+        return t('network_dns_cors', { message: err.message });
     }
 
     const currentHost = typeof window !== 'undefined' ? window.location.host : '';
     const crossOrigin = targetHost && currentHost && targetHost !== currentHost;
     if (crossOrigin) {
-        return `Запрос заблокирован браузером (CORS/Network policy) для домена ${targetHost}.`;
+        return t('cors_blocked', { host: targetHost });
     }
 
-    return 'Запрос не ушёл: проблемы с сетью, DNS или CORS. ' + err.message;
+    return t('network_dns_cors', { message: err.message });
 }
 
 function addHeaderFromInputs() {
@@ -569,11 +744,11 @@ function getStatusBadge(code) {
 }
 
 function analyzeStatus(code) {
-    if (code >= 200 && code < 300) return 'Все ок: ответ 2xx.';
-    if (code === 404) return '404: возможно, неверный endpoint или ресурс не существует.';
-    if (code === 403) return '403: нет доступа/прав, проверьте авторизацию или токен.';
-    if (code >= 500) return '5xx: проблема на стороне сервера, повторите позже или сообщите backend.';
-    if (code >= 400 && code < 500) return '4xx: клиентская ошибка, проверьте запрос/права.';
+    if (code >= 200 && code < 300) return t('status_analysis_ok');
+    if (code === 404) return t('status_analysis_404');
+    if (code === 403) return t('status_analysis_403');
+    if (code >= 500) return t('status_analysis_5xx');
+    if (code >= 400 && code < 500) return t('status_analysis_4xx');
     return '';
 }
 
@@ -617,7 +792,7 @@ function renderHistory() {
     list.innerHTML = '';
 
     if (!history.length) {
-        list.innerHTML = '<div style="color:#888">История пуста</div>';
+        list.innerHTML = `<div style="color:#888">${t('history_empty')}</div>`;
         return;
     }
 
@@ -644,14 +819,14 @@ function renderHistory() {
         if (item.body) {
             const bodyTag = document.createElement('span');
             bodyTag.className = 'tag';
-            bodyTag.textContent = 'body';
+            bodyTag.textContent = t('tag_body');
             div.appendChild(bodyTag);
         }
 
         if (item.headers) {
             const headersTag = document.createElement('span');
             headersTag.className = 'tag';
-            headersTag.textContent = 'headers';
+            headersTag.textContent = t('tag_headers');
             div.appendChild(headersTag);
         }
 
@@ -669,6 +844,7 @@ function fillFromHistory(item) {
 
 // Initial render
 window.addEventListener('DOMContentLoaded', () => {
+    applyI18n();
     renderHistory();
     const copyBtn = document.getElementById('copyBtn');
     if (copyBtn) copyBtn.disabled = true;
@@ -691,6 +867,13 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    const localeToggle = document.getElementById('localeToggle');
+    if (localeToggle) {
+        localeToggle.addEventListener('click', () => {
+            setLocale(currentLocale === 'ru' ? 'en' : 'ru');
+        });
+    }
 });
 
 function clearAll() {
@@ -707,7 +890,7 @@ function clearAll() {
     const curlInput = document.getElementById('curlInput');
     if (curlInput) curlInput.value = '';
     document.getElementById('responseOutput').textContent = '';
-    document.getElementById('statusLine').textContent = 'Status: —';
+    document.getElementById('statusLine').textContent = t('status_dash');
     document.getElementById('statusLine').className = 'status';
     document.getElementById('statusBadge').textContent = '—';
     document.getElementById('statusBadge').className = 'status-badge';

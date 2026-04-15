@@ -63,6 +63,10 @@ body {
     border-radius: 16px;
     padding: 18px;
     box-shadow: var(--glow);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
 }
 
 .eyebrow {
@@ -72,6 +76,24 @@ body {
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: #67e6a6;
+}
+
+.locale-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #2f4f82;
+    background: #132748;
+    color: #dbe9ff;
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 1;
+}
+
+.locale-icon {
+    font-size: 14px;
 }
 
 h1 {

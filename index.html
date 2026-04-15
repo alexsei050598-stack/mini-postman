@@ -11,9 +11,13 @@
 <div class="container">
     <header class="topbar">
         <div>
-            <p class="eyebrow">QA-ready</p>
+            <p class="eyebrow" data-i18n="kicker">QA-ready</p>
             <h1>Mini Postman</h1>
         </div>
+        <button id="localeToggle" class="locale-toggle" type="button" aria-label="Change language">
+            <span class="locale-icon">🌐</span>
+            <span id="localeLabel">EN</span>
+        </button>
     </header>
 
     <div class="request-box">
@@ -30,29 +34,29 @@
         <input type="text" id="url" placeholder="https://api.example.com">
 
         <select id="mode">
-            <option value="normal">Normal</option>
-            <option value="slow3g">Slow 3G</option>
-            <option value="offline">Offline</option>
+            <option value="normal" data-i18n="mode_normal">Normal</option>
+            <option value="slow3g" data-i18n="mode_slow3g">Slow 3G</option>
+            <option value="offline" data-i18n="mode_offline">Offline</option>
         </select>
 
         <label class="proxy-toggle">
             <input type="checkbox" id="useProxy" checked>
-            <span>Use proxy</span>
+            <span data-i18n="use_proxy">Use proxy</span>
         </label>
 
-        <button class="primary" onclick="sendRequest()">Send</button>
-        <button class="ghost" onclick="clearAll()">Clear</button>
+        <button class="primary" onclick="sendRequest()" data-i18n="send">Send</button>
+        <button class="ghost" onclick="clearAll()" data-i18n="clear">Clear</button>
     </div>
 
     <div class="curl-import">
         <div class="curl-import-head">
-            <strong>Import from DevTools cURL</strong>
-            <button class="ghost small" type="button" onclick="importCurlCommand()">Import</button>
+            <strong data-i18n="curl_import_title">Import from DevTools cURL</strong>
+            <button class="ghost small" type="button" onclick="importCurlCommand()" data-i18n="import">Import</button>
         </div>
-        <textarea id="curlInput" class="curl-area" placeholder="Paste 'Copy as cURL' command here"></textarea>
+        <textarea id="curlInput" class="curl-area" data-i18n-placeholder="curl_placeholder" placeholder="Paste 'Copy as cURL' command here"></textarea>
     </div>
 
-    <textarea id="headers" class="headers-area" placeholder="Headers (key: value per line)&#10;Content-Type: application/json&#10;Authorization: Bearer ..."></textarea>
+    <textarea id="headers" class="headers-area" data-i18n-placeholder="headers_placeholder" placeholder="Headers (key: value per line)&#10;Content-Type: application/json&#10;Authorization: Bearer ..."></textarea>
     <div class="headers-tools">
         <div class="headers-row">
             <select id="headerNameSelect">
@@ -64,30 +68,30 @@
                 <option value="X-Correlation-ID">X-Correlation-ID</option>
                 <option value="Cache-Control">Cache-Control</option>
                 <option value="If-None-Match">If-None-Match</option>
-                <option value="Custom">Custom...</option>
+                <option value="Custom" data-i18n="custom_header">Custom...</option>
             </select>
-            <input type="text" id="headerCustomKey" placeholder="Custom header key" style="display:none;">
-            <input type="text" id="headerValue" placeholder="Header value (e.g. Bearer TOKEN)">
-            <button class="ghost small" type="button" onclick="addHeaderFromInputs()">Add</button>
+            <input type="text" id="headerCustomKey" data-i18n-placeholder="custom_header_key" placeholder="Custom header key" style="display:none;">
+            <input type="text" id="headerValue" data-i18n-placeholder="header_value_placeholder" placeholder="Header value (e.g. Bearer TOKEN)">
+            <button class="ghost small" type="button" onclick="addHeaderFromInputs()" data-i18n="add">Add</button>
         </div>
         <div class="headers-actions">
             <button class="ghost small" type="button" onclick="applyHeaderPreset('json')">JSON</button>
             <button class="ghost small" type="button" onclick="applyHeaderPreset('auth')">Bearer</button>
-            <button class="ghost small" type="button" onclick="applyHeaderPreset('accept')">Accept JSON</button>
-            <button class="ghost small" type="button" onclick="formatHeadersEditor()">Format</button>
-            <button class="ghost small" type="button" onclick="clearHeadersEditor()">Clear headers</button>
+            <button class="ghost small" type="button" onclick="applyHeaderPreset('accept')" data-i18n="accept_json">Accept JSON</button>
+            <button class="ghost small" type="button" onclick="formatHeadersEditor()" data-i18n="format">Format</button>
+            <button class="ghost small" type="button" onclick="clearHeadersEditor()" data-i18n="clear_headers">Clear headers</button>
         </div>
     </div>
 
-    <textarea id="body" class="body-area" placeholder="Request body (JSON)"></textarea>
+    <textarea id="body" class="body-area" data-i18n-placeholder="body_placeholder" placeholder="Request body (JSON)"></textarea>
 
     <div class="history">
-        <h3>History</h3>
+        <h3 data-i18n="history">History</h3>
         <div id="historyList" class="history-list"></div>
     </div>
 
     <div class="response">
-        <h3>Response:</h3>
+        <h3 data-i18n="response">Response:</h3>
         <div class="status-row">
             <span id="statusBadge" class="status-badge">—</span>
             <span id="statusLine" class="status">Status: —</span>
@@ -95,7 +99,7 @@
         <div id="requestInfo" class="request-info"></div>
         <div id="analysis" class="analysis"></div>
         <div class="actions-row">
-            <button id="copyBtn" class="ghost small" onclick="copyResponse()">Copy response</button>
+            <button id="copyBtn" class="ghost small" onclick="copyResponse()" data-i18n="copy_response">Copy response</button>
         </div>
         <pre id="responseOutput"></pre>
     </div>
