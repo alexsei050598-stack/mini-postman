@@ -153,11 +153,7 @@ async function sendRequest() {
             return;
         }
 
-        if (err instanceof TypeError) {
-            output.textContent = 'Запрос не ушёл: проблемы с сетью, DNS или CORS. ' + err.message;
-        } else {
-            output.textContent = `Ошибка запроса: ${err.message}`;
-        }
+        output.textContent = getErrorHint(err, url);
     }
 }
 
@@ -193,6 +189,27 @@ function parseHeaders(raw) {
         headers[key] = value;
     }
     return headers;
+}
+
+function getErrorHint(err, requestUrl) {
+    if (!(err instanceof TypeError)) {
+        return `Ошибка запроса: ${err.message}`;
+    }
+
+    let targetHost = '';
+    try {
+        targetHost = new URL(requestUrl).host;
+    } catch (_) {
+        return 'Запрос не ушёл: проблемы с сетью, DNS или CORS. ' + err.message;
+    }
+
+    const currentHost = typeof window !== 'undefined' ? window.location.host : '';
+    const crossOrigin = targetHost && currentHost && targetHost !== currentHost;
+    if (crossOrigin) {
+        return `Запрос заблокирован браузером (CORS/Network policy) для домена ${targetHost}.`;
+    }
+
+    return 'Запрос не ушёл: проблемы с сетью, DNS или CORS. ' + err.message;
 }
 
 function addHeaderFromInputs() {
