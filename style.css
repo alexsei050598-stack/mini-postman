@@ -107,6 +107,23 @@ h3 {
     grid-column: 1 / span 2;
 }
 
+.proxy-toggle {
+    grid-column: 1 / span 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 700;
+    padding: 4px 2px;
+}
+
+.proxy-toggle input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+}
+
 .request-box .primary,
 .request-box .ghost {
     grid-column: span 1;

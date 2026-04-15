@@ -5,6 +5,7 @@ async function sendRequest() {
     const headersRaw = document.getElementById('headers').value;
     const bodyInput = document.getElementById('body').value;
     const mode = document.getElementById('mode').value;
+    const useProxy = !!document.getElementById('useProxy')?.checked;
     const output = document.getElementById('responseOutput');
     const statusLine = document.getElementById('statusLine');
     const requestInfo = document.getElementById('requestInfo');
@@ -34,21 +35,8 @@ async function sendRequest() {
         return;
     }
 
-    // Validate JSON body before sending (only methods with body)
+    // Methods that may carry request body
     const methodAllowsBody = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method);
-    if (methodAllowsBody && bodyInput) {
-        try {
-            JSON.parse(bodyInput);
-        } catch (err) {
-            statusLine.textContent = 'Status: body is not valid JSON';
-            statusLine.className = 'status error';
-            output.textContent = 'Тело запроса невалидно: ' + err.message;
-            statusBadge.textContent = 'ERR';
-            statusBadge.className = 'status-badge error';
-            analysis.textContent = '';
-            return;
-        }
-    }
 
     let headers;
     try {
@@ -61,6 +49,23 @@ async function sendRequest() {
         statusBadge.className = 'status-badge error';
         analysis.textContent = '';
         return;
+    }
+
+    // Validate JSON body only when Content-Type explicitly says JSON
+    const contentTypeHeader = Object.entries(headers).find(([k]) => k.toLowerCase() === 'content-type');
+    const hasJsonContentType = contentTypeHeader && contentTypeHeader[1].toLowerCase().includes('application/json');
+    if (methodAllowsBody && bodyInput && hasJsonContentType) {
+        try {
+            JSON.parse(bodyInput);
+        } catch (err) {
+            statusLine.textContent = 'Status: body is not valid JSON';
+            statusLine.className = 'status error';
+            output.textContent = 'Тело запроса невалидно для Content-Type application/json: ' + err.message;
+            statusBadge.textContent = 'ERR';
+            statusBadge.className = 'status-badge error';
+            analysis.textContent = '';
+            return;
+        }
     }
 
     output.textContent = 'Sending request...';
@@ -85,7 +90,7 @@ async function sendRequest() {
         const hasContentType = Object.keys(headers).some(
             h => h.toLowerCase() === 'content-type'
         );
-        if (!hasContentType) {
+        if (!hasContentType && method === 'POST') {
             headers['Content-Type'] = 'application/json';
         }
         options.body = bodyInput;
@@ -99,7 +104,23 @@ async function sendRequest() {
             throw new OfflineError('Offline mode enabled');
         }
 
-        const response = await fetch(url, options);
+        let requestUrl = url;
+        let requestOptions = options;
+        if (useProxy) {
+            requestUrl = '/api/proxy';
+            requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    url,
+                    method,
+                    headers,
+                    body: methodAllowsBody ? (bodyInput || null) : null
+                })
+            };
+        }
+
+        const response = await fetch(requestUrl, requestOptions);
         const buffer = await response.arrayBuffer();
         const hasBody = buffer.byteLength > 0;
         const text = hasBody ? new TextDecoder().decode(buffer) : '';
