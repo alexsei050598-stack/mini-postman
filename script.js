@@ -226,6 +226,153 @@ function parseHeaders(raw) {
     return headers;
 }
 
+function importCurlCommand() {
+    const curlInput = document.getElementById('curlInput');
+    const output = document.getElementById('responseOutput');
+    const statusLine = document.getElementById('statusLine');
+    const statusBadge = document.getElementById('statusBadge');
+    const analysis = document.getElementById('analysis');
+    const raw = (curlInput?.value || '').trim();
+
+    if (!raw) {
+        statusLine.textContent = 'Status: import error';
+        statusLine.className = 'status error';
+        statusBadge.textContent = 'ERR';
+        statusBadge.className = 'status-badge error';
+        output.textContent = 'Вставьте команду cURL из DevTools (Copy as cURL).';
+        analysis.textContent = '';
+        return;
+    }
+
+    try {
+        const parsed = parseCurlCommand(raw);
+        if (!parsed.url) throw new Error('URL не найден в cURL команде.');
+
+        document.getElementById('url').value = parsed.url;
+        document.getElementById('method').value = parsed.method || 'GET';
+        updateMethodStyle(parsed.method || 'GET');
+        document.getElementById('headers').value = parsed.headers.join('\n');
+        document.getElementById('body').value = parsed.body || '';
+        const proxyEl = document.getElementById('useProxy');
+        if (proxyEl) proxyEl.checked = true;
+
+        statusLine.textContent = 'Status: imported';
+        statusLine.className = 'status ok';
+        statusBadge.textContent = 'OK';
+        statusBadge.className = 'status-badge success';
+        output.textContent = 'cURL импортирован. Проверьте данные и нажмите Send.';
+        analysis.textContent = '';
+    } catch (err) {
+        statusLine.textContent = 'Status: import error';
+        statusLine.className = 'status error';
+        statusBadge.textContent = 'ERR';
+        statusBadge.className = 'status-badge error';
+        output.textContent = 'Не удалось импортировать cURL: ' + err.message;
+        analysis.textContent = '';
+    }
+}
+
+function parseCurlCommand(raw) {
+    // Remove line continuations to parse multiline copied commands
+    const normalized = raw.replace(/\\\r?\n/g, ' ').trim();
+    const tokens = shellSplit(normalized);
+    if (!tokens.length) throw new Error('Пустая команда.');
+    if (tokens[0] !== 'curl') throw new Error('Команда должна начинаться с curl.');
+
+    let method = '';
+    let url = '';
+    const headers = [];
+    const bodyChunks = [];
+
+    for (let i = 1; i < tokens.length; i += 1) {
+        const t = tokens[i];
+        if (t === '-X' || t === '--request') {
+            method = (tokens[i + 1] || '').toUpperCase();
+            i += 1;
+            continue;
+        }
+        if (t === '-H' || t === '--header') {
+            const headerLine = normalizeCurlValue(tokens[i + 1] || '');
+            if (headerLine) headers.push(headerLine);
+            i += 1;
+            continue;
+        }
+        if (t === '--url') {
+            url = normalizeCurlValue(tokens[i + 1] || '');
+            i += 1;
+            continue;
+        }
+        if (t === '-d' || t === '--data' || t === '--data-raw' || t === '--data-binary' || t === '--data-urlencode') {
+            bodyChunks.push(normalizeCurlValue(tokens[i + 1] || ''));
+            i += 1;
+            continue;
+        }
+        if (/^https?:\/\//i.test(t)) {
+            url = normalizeCurlValue(t);
+            continue;
+        }
+    }
+
+    const body = bodyChunks.join('&');
+    if (!method) method = body ? 'POST' : 'GET';
+
+    return { method, url, headers, body };
+}
+
+function shellSplit(input) {
+    const out = [];
+    let cur = '';
+    let quote = '';
+    let escaped = false;
+
+    for (let i = 0; i < input.length; i += 1) {
+        const ch = input[i];
+        if (escaped) {
+            cur += ch;
+            escaped = false;
+            continue;
+        }
+        if (ch === '\\') {
+            escaped = true;
+            continue;
+        }
+        if (quote) {
+            if (ch === quote) {
+                quote = '';
+            } else {
+                cur += ch;
+            }
+            continue;
+        }
+        if (ch === '"' || ch === "'") {
+            quote = ch;
+            continue;
+        }
+        if (/\s/.test(ch)) {
+            if (cur) {
+                out.push(cur);
+                cur = '';
+            }
+            continue;
+        }
+        cur += ch;
+    }
+    if (cur) out.push(cur);
+    return out;
+}
+
+function normalizeCurlValue(v) {
+    let value = String(v || '').trim();
+    if (value.startsWith("$'") && value.endsWith("'")) {
+        value = value.slice(2, -1)
+            .replace(/\\n/g, '\n')
+            .replace(/\\r/g, '\r')
+            .replace(/\\t/g, '\t')
+            .replace(/\\'/g, "'");
+    }
+    return value;
+}
+
 function sanitizeHeaderValue(value) {
     // Replace typographic punctuation that commonly appears after copy/paste
     return String(value)
@@ -557,6 +704,8 @@ function clearAll() {
     toggleCustomHeaderKeyInput();
     document.getElementById('headerValue').value = '';
     document.getElementById('body').value = '';
+    const curlInput = document.getElementById('curlInput');
+    if (curlInput) curlInput.value = '';
     document.getElementById('responseOutput').textContent = '';
     document.getElementById('statusLine').textContent = 'Status: —';
     document.getElementById('statusLine').className = 'status';

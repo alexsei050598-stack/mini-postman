@@ -47,11 +47,12 @@ body {
     grid-template-areas:
         "topbar response"
         "request response"
+        "curlImport response"
         "headers response"
         "headersTools response"
         "body response"
         "history response";
-    grid-template-rows: auto auto auto auto auto 1fr;
+    grid-template-rows: auto auto auto auto auto auto 1fr;
     gap: 14px;
 }
 
@@ -85,6 +86,7 @@ h3 {
 }
 
 .request-box,
+.curl-import,
 .history,
 .response,
 .headers-area,
@@ -93,6 +95,34 @@ h3 {
     border: 1px solid var(--line);
     border-radius: 16px;
     box-shadow: var(--glow);
+}
+
+.curl-import {
+    grid-area: curlImport;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.curl-import-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.curl-area {
+    width: 100%;
+    min-height: 92px;
+    resize: vertical;
+    border: 1px dashed #2f4f82;
+    background: #09152c;
+    color: var(--text);
+    border-radius: 10px;
+    padding: 10px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 13px;
 }
 
 .request-box {
@@ -400,6 +430,7 @@ textarea:focus-visible {
         grid-template-areas:
             "topbar"
             "request"
+            "curlImport"
             "headers"
             "headersTools"
             "body"

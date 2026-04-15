@@ -44,6 +44,14 @@
         <button class="ghost" onclick="clearAll()">Clear</button>
     </div>
 
+    <div class="curl-import">
+        <div class="curl-import-head">
+            <strong>Import from DevTools cURL</strong>
+            <button class="ghost small" type="button" onclick="importCurlCommand()">Import</button>
+        </div>
+        <textarea id="curlInput" class="curl-area" placeholder="Paste 'Copy as cURL' command here"></textarea>
+    </div>
+
     <textarea id="headers" class="headers-area" placeholder="Headers (key: value per line)&#10;Content-Type: application/json&#10;Authorization: Bearer ..."></textarea>
     <div class="headers-tools">
         <div class="headers-row">
