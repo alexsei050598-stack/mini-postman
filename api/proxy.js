@@ -31,7 +31,15 @@ export default async function handler(req, res) {
             const lower = key.toLowerCase();
             // Strip hop-by-hop/internal headers
             if (['host', 'origin', 'content-length', 'connection'].includes(lower)) continue;
-            cleanHeaders[key] = value;
+            const strValue = String(value ?? '');
+            if (!isLatin1(strValue)) {
+                res.status(400).json({
+                    error: 'Invalid header value',
+                    message: `Header "${key}" contains non-latin1 characters (for example “…”).`
+                });
+                return;
+            }
+            cleanHeaders[key] = strValue;
         }
 
         const hasBody = body !== null && body !== undefined && body !== '';
@@ -56,4 +64,11 @@ export default async function handler(req, res) {
     } catch (err) {
         res.status(502).json({ error: 'Proxy request failed', message: err.message });
     }
+}
+
+function isLatin1(value) {
+    for (let i = 0; i < value.length; i += 1) {
+        if (value.charCodeAt(i) > 255) return false;
+    }
+    return true;
 }

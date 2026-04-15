@@ -35,6 +35,17 @@ async function sendRequest() {
         return;
     }
 
+    const knownUrlIssue = getKnownUrlIssue(url);
+    if (knownUrlIssue) {
+        statusLine.textContent = 'Status: invalid target URL';
+        statusLine.className = 'status error';
+        statusBadge.textContent = 'ERR';
+        statusBadge.className = 'status-badge error';
+        output.textContent = knownUrlIssue;
+        analysis.textContent = '';
+        return;
+    }
+
     // Methods that may carry request body
     const methodAllowsBody = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method);
 
@@ -203,13 +214,48 @@ function parseHeaders(raw) {
             throw new Error('Каждый header должен быть в формате Key: Value');
         }
         const key = line.slice(0, idx).trim();
-        const value = line.slice(idx + 1).trim();
+        const value = sanitizeHeaderValue(line.slice(idx + 1).trim());
         if (!key) {
             throw new Error('Header name не может быть пустым');
+        }
+        if (!isLatin1(value)) {
+            throw new Error(`Header "${key}" содержит недопустимые символы (например, “…”). Используйте обычные ASCII символы.`);
         }
         headers[key] = value;
     }
     return headers;
+}
+
+function sanitizeHeaderValue(value) {
+    // Replace typographic punctuation that commonly appears after copy/paste
+    return String(value)
+        .replace(/\u2026/g, '...')
+        .replace(/\u2013/g, '-')
+        .replace(/\u2014/g, '-')
+        .replace(/\u2018|\u2019/g, "'")
+        .replace(/\u201C|\u201D/g, '"');
+}
+
+function isLatin1(value) {
+    for (let i = 0; i < value.length; i += 1) {
+        if (value.charCodeAt(i) > 255) return false;
+    }
+    return true;
+}
+
+function getKnownUrlIssue(rawUrl) {
+    let u;
+    try {
+        u = new URL(rawUrl);
+    } catch (_) {
+        return null;
+    }
+
+    if (u.host === 'api.openai.com' && u.pathname.startsWith('/dashboard/')) {
+        return 'Для OpenAI используйте API endpoint вида https://api.openai.com/v1/... (а не /dashboard/...).';
+    }
+
+    return null;
 }
 
 function getErrorHint(err, requestUrl) {
